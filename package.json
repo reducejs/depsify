@@ -1,0 +1,51 @@
+{
+  "name": "depsify",
+  "version": "0.0.1",
+  "description": "Allow css modules to declare their dependencies and pack in custom ways",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zoubin/depsify.git"
+  },
+  "keywords": [
+    "css",
+    "browserify",
+    "postcss"
+  ],
+  "author": "zoubin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zoubin/depsify/issues"
+  },
+  "homepage": "https://github.com/zoubin/depsify#readme",
+  "dependencies": {
+    "css-module-deps": "0.0.1",
+    "deps-topo-sort": "^0.2.1",
+    "labeled-stream-splicer": "^2.0.0",
+    "read-only-stream": "^2.0.0",
+    "resolve": "^1.1.6",
+    "sink-transform": "^1.0.0",
+    "through2": "^2.0.0",
+    "util-mix": "^3.0.2"
+  },
+  "devDependencies": {
+    "babel-core": "^5.8.25",
+    "callback-sequence": "^1.2.1",
+    "coveralls": "^2.11.4",
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-eslint": "^1.0.0",
+    "gulp-istanbul": "^0.10.1",
+    "gulp-json-editor": "^2.2.1",
+    "gulp-tape": "0.0.4",
+    "isparta": "^3.0.4",
+    "sink-transform": "^1.0.0",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.0",
+    "task-tape": "^0.1.0"
+  }
+}
