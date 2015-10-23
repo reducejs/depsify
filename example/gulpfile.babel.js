@@ -1,19 +1,3 @@
-# depsify
-Allow css modules to declare their dependencies and pack in custom ways. See [reduce-css](https://github.com/zoubin/reduce-css).
-
-[![npm](https://nodei.co/npm/depsify.png?downloads=true)](https://www.npmjs.org/package/depsify)
-
-[![version](https://img.shields.io/npm/v/depsify.svg)](https://www.npmjs.org/package/depsify)
-[![status](https://travis-ci.org/zoubin/depsify.svg?branch=master)](https://travis-ci.org/zoubin/depsify)
-[![coverage](https://img.shields.io/coveralls/zoubin/depsify.svg)](https://coveralls.io/github/zoubin/depsify)
-[![dependencies](https://david-dm.org/zoubin/depsify.svg)](https://david-dm.org/zoubin/depsify)
-[![devDependencies](https://david-dm.org/zoubin/depsify/dev-status.svg)](https://david-dm.org/zoubin/depsify#info=devDependencies)
-
-The main ideas are borrowed from [browserify](https://github.com/substack/node-browserify)
-
-## Example
-
-```javascript
 import gulp from 'gulp'
 import depsify from '../lib/main'
 import path from 'path'
@@ -54,6 +38,4 @@ gulp.task('default', ['clean'], function () {
   .pipe(source('common.css'))
   .pipe(gulp.dest(DEST))
 })
-
-```
 

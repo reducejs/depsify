@@ -5,7 +5,7 @@ import sink from 'sink-transform'
 
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
-test('single bundle', function(t) {
+test('custome resolve', function(t) {
   let d = Depsify({
     basedir: fixtures(),
     resolve: function (file) {
@@ -26,6 +26,16 @@ test('single bundle', function(t) {
   })
   return d.bundle().pipe(sink.str((body, done) => {
     t.equal(body, '.c{}.a{}.b{}')
+    done()
+  }))
+})
+
+test('node-style resolve', function(t) {
+  let d = Depsify('./resolve/a.css', {
+    basedir: fixtures(),
+  })
+  return d.bundle().pipe(sink.str((body, done) => {
+    t.equal(body.replace(/\s+/g, ''), '.color{}.b{}.a{}')
     done()
   }))
 })
