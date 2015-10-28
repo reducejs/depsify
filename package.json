@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/zoubin/depsify#readme",
   "dependencies": {
-    "css-module-deps": "1.0.0",
+    "css-module-deps": "^1.1.0",
     "deps-topo-sort": "^0.2.1",
     "labeled-stream-splicer": "^2.0.0",
     "read-only-stream": "^2.0.0",
