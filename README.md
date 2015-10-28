@@ -11,6 +11,10 @@ Allow css modules to declare their dependencies and pack in custom ways. See [re
 
 The main ideas are borrowed from [browserify](https://github.com/substack/node-browserify)
 
+## Related
+
+* [reduce-css](https://github.com/zoubin/reduce-css)
+
 ## Example
 
 ```javascript
@@ -56,4 +60,29 @@ gulp.task('default', ['clean'], function () {
 })
 
 ```
+
+## API
+
+### Options
+
+#### basedir
+
+#### entries
+
+#### plugin
+
+#### __More__
+See [css-module-deps](https://github.com/zoubin/css-module-deps)
+
+### Methods
+
+#### add(file, opts)
+
+#### processor(p)
+
+#### plugin(p, opts)
+
+#### bundle()
+
+#### reset()
 
