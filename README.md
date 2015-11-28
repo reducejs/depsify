@@ -1,8 +1,6 @@
 # depsify
 Allow css modules to declare their dependencies and pack in custom ways. See [reduce-css](https://github.com/zoubin/reduce-css).
 
-[![npm](https://nodei.co/npm/depsify.png?downloads=true)](https://www.npmjs.org/package/depsify)
-
 [![version](https://img.shields.io/npm/v/depsify.svg)](https://www.npmjs.org/package/depsify)
 [![status](https://travis-ci.org/zoubin/depsify.svg?branch=master)](https://travis-ci.org/zoubin/depsify)
 [![coverage](https://img.shields.io/coveralls/zoubin/depsify.svg)](https://coveralls.io/github/zoubin/depsify)
