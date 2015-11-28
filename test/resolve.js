@@ -1,12 +1,12 @@
-import test from 'tape'
-import Depsify from '../lib/main'
-import path from 'path'
-import sink from 'sink-transform'
-
+var test = require('tap').test
+var Depsify = require('../')
+var path = require('path')
+var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
 test('custome resolve', function(t) {
-  let d = Depsify({
+  t.plan(1)
+  var d = Depsify({
     basedir: fixtures(),
     resolve: function (file) {
       return Promise.resolve(fixtures(file))
@@ -24,17 +24,18 @@ test('custome resolve', function(t) {
     file: './c.css',
     source: '.c{}',
   })
-  return d.bundle().pipe(sink.str((body, done) => {
+  d.bundle().pipe(sink.str(function (body, done) {
     t.equal(body, '.c{}.a{}.b{}')
     done()
   }))
 })
 
 test('node-style resolve', function(t) {
-  let d = Depsify('./resolve/a.css', {
+  t.plan(1)
+  var d = Depsify('./resolve/a.css', {
     basedir: fixtures(),
   })
-  return d.bundle().pipe(sink.str((body, done) => {
+  d.bundle().pipe(sink.str(function (body, done) {
     t.equal(body.replace(/\s+/g, ''), '.color{}.b{}.a{}')
     done()
   }))

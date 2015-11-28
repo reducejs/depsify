@@ -1,30 +1,30 @@
-import test from 'tape'
-import Depsify from '../lib/main'
-import path from 'path'
-import sink from 'sink-transform'
-
+var test = require('tap').test
+var Depsify = require('../')
+var path = require('path')
+var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
 test('processor', function(t) {
-  let d = Depsify({
+  t.plan(1)
+  var d = Depsify({
     basedir: fixtures(),
     resolve: function (file) {
       return Promise.resolve(fixtures(file))
     },
-    readFile: (file) => {
+    readFile: function (file) {
       return Promise.resolve(path.basename(file, '.css') + '{}')
     },
   })
   d.add(['./b.css', './a.css'])
   d.processor([prefixer, 'x-'])
-  return d.bundle().pipe(sink.str((body, done) => {
+  d.bundle().pipe(sink.str(function (body) {
     t.equal(body, 'x-a{}x-b{}')
-    done()
+    this.push(null)
   }))
 })
 
 function prefixer(result, prefix) {
-  let css = result.css
+  var css = result.css
   css = prefix + css.replace(/\s+/, '')
   result.css = css
 }

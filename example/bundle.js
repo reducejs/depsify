@@ -1,14 +1,12 @@
-import gulp from 'gulp'
-import depsify from '../lib/main'
-import path from 'path'
-import del from 'del'
-import postcss from 'postcss'
-import url from 'postcss-url'
-import source from 'vinyl-source-stream'
+var depsify = require('../')
+var path = require('path')
+var del = require('del')
+var postcss = require('postcss')
+var url = require('postcss-url')
 
 var processor = postcss([
   require('postcss-import')(),
-  require('postcss-url')({ url: 'copy', assetsPath: 'i' }),
+  require('postcss-url')({ url: 'inline' }),
   require('postcss-advanced-variables')(),
 ])
 
@@ -16,12 +14,8 @@ var fixtures = path.resolve.bind(path, __dirname, 'src')
 var DEST = path.join(__dirname, 'build')
 var common = path.join(DEST, 'common.css')
 
-gulp.task('clean', function () {
-  return del(DEST)
-})
-
-gulp.task('default', ['clean'], function () {
-  return depsify({
+del(DEST).then(function () {
+  depsify({
     basedir: fixtures(),
     entries: ['a.css', 'b.css'],
     processor: function (result) {
@@ -35,7 +29,6 @@ gulp.task('default', ['clean'], function () {
     },
   })
   .bundle()
-  .pipe(source('common.css'))
-  .pipe(gulp.dest(DEST))
+  .pipe(process.stdout)
 })
 

@@ -4,7 +4,11 @@
   "description": "Allow css modules to declare their dependencies and pack in custom ways",
   "main": "index.js",
   "scripts": {
-    "test": "gulp"
+    "test": "npm run lint && npm run cov && npm run check-cov",
+    "lint": "eslint *.js lib/**/*.js test/*.js bin/*.js",
+    "cov": "tap --cov test/*.js",
+    "check-cov": "nyc check-coverage --statements 90 --functions 90 --branches 85 --lines 90",
+    "coveralls": "COVERALLS_REPO_TOKEN=YNDj4EuanRhIw7GPC8UVAUYdDb8Aiclom npm test"
   },
   "repository": {
     "type": "git",
@@ -32,25 +36,14 @@
     "util-mix": "^3.0.2"
   },
   "devDependencies": {
-    "babel-core": "^5.8.25",
-    "callback-sequence": "^1.2.1",
-    "coveralls": "^2.11.4",
     "del": "^2.0.2",
-    "factor-vinylify": "^2.0.0",
-    "gulp": "^3.9.0",
-    "gulp-babel": "^5.2.1",
-    "gulp-eslint": "^1.0.0",
-    "gulp-istanbul": "^0.10.1",
-    "gulp-json-editor": "^2.2.1",
-    "gulp-tape": "0.0.4",
-    "isparta": "^3.0.4",
+    "eslint": "^1.10.1",
+    "factor-vinylify": "^3.0.0",
+    "nyc": "^3.2.2",
     "postcss": "^5.0.10",
     "postcss-advanced-variables": "^1.1.0",
     "postcss-import": "^7.1.0",
     "postcss-url": "^5.0.2",
-    "tap-spec": "^4.1.0",
-    "tape": "^4.2.0",
-    "task-tape": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "tap": "^2.3.1"
   }
 }

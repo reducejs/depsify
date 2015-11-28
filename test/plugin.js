@@ -1,29 +1,28 @@
-import test from 'tape'
-import Depsify from '../lib/main'
-import path from 'path'
-import sink from 'sink-transform'
-
+var test = require('tap').test
+var Depsify = require('../')
+var path = require('path')
+var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
 test('plugin', function(t) {
-  let A = {
+  t.plan(1)
+  var A = {
     file: './a.css',
     source: '@deps "./c.css";.a{}',
   }
-  let B = {
+  var B = {
     file: './b.css',
     source: '@deps "./c.css";.b{}',
   }
-  let C = {
+  var C = {
     file: './c.css',
     source: '.c{}',
   }
-  let cache = {
-    [fixtures('a.css')]: A,
-    [fixtures('b.css')]: B,
-    [fixtures('c.css')]: C,
-  }
-  let d = Depsify({
+  var cache = {}
+  cache[fixtures('a.css')] = A
+  cache[fixtures('b.css')] = B
+  cache[fixtures('c.css')] = C
+  var d = Depsify({
     basedir: fixtures(),
     entries: [A.file, B.file, C.file],
     resolve: function (file) {
@@ -38,28 +37,29 @@ test('plugin', function(t) {
     entries: [A.file, B.file],
     common: 'common.css',
   })
-  d.on('factor.pipeline', (file, pipeline) => {
-    let labeled = pipeline.get('pack')
+  d.on('factor.pipeline', function (file, pipeline) {
+    var labeled = pipeline.get('pack')
     labeled.splice(labeled.length - 1, 1, d.pack())
   })
 
-  return d.bundle().pipe(sink.obj((files, done) => {
+  var expected = [{}, {}, {}]
+  expected[0][fixtures('a.css')] = '.a{}'
+  expected[1][fixtures('b.css')] = '.b{}'
+  expected[2][fixtures('common.css')] = '.c{}'
+
+  d.bundle().pipe(sink.obj(function (files) {
     t.same(
       files.sort(function (a, b) {
         return a.path < b.path ? -1 : 1
       })
       .map(function (file) {
-        return {
-          [file.path]: file.contents.toString('utf8'),
-        }
+        var ret = {}
+        ret[file.path] = file.contents.toString('utf8')
+        return ret
       }),
-      [
-        { [fixtures('a.css')]: '.a{}' },
-        { [fixtures('b.css')]: '.b{}' },
-        { [fixtures('common.css')]: '.c{}' },
-      ]
+      expected
     )
-    done()
+    this.push(null)
   }))
 })
 

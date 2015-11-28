@@ -1,46 +1,42 @@
-import test from 'tape'
-import Depsify from '../lib/main'
-import path from 'path'
-import sink from 'sink-transform'
-
+var test = require('tap').test
+var Depsify = require('../')
+var path = require('path')
+var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
 test('readFile', function(t) {
-  let A = {
+  t.plan(2)
+  var A = {
     source: 'aa{}',
     deps: {},
   }
-  let B = {
+  var B = {
     source: 'bb{}',
     deps: {},
   }
-  let cache = {
-    [fixtures('a.css')]: A,
-    [fixtures('b.css')]: B,
-  }
-  let d = Depsify({
+  var cache = {}
+  cache[fixtures('a.css')] = A
+  cache[fixtures('b.css')] = B
+  var d = Depsify({
     basedir: fixtures(),
-    resolve: (file) => {
+    resolve: function (file) {
       return Promise.resolve(fixtures(file))
     },
-    readFile: (file) => {
+    readFile: function (file) {
       return Promise.resolve(path.basename(file, '.css') + '{}')
     },
     cache: cache,
   })
   d.add(['./b.css', './a.css'])
-  t.task(() => {
-    return d.bundle().pipe(sink.str((body, done) => {
-      t.equal(body, 'aa{}bb{}')
-      done()
-    }))
-  })
-  t.task(() => {
+  d.bundle().pipe(sink.str(function (body) {
+    t.equal(body, 'aa{}bb{}')
+    this.push(null)
+
     delete cache[fixtures('a.css')]
-    return d.bundle().pipe(sink.str((body, done) => {
-      t.equal(body, 'a{}bb{}')
-      done()
+    d.bundle().pipe(sink.str(function (src) {
+      t.equal(src, 'a{}bb{}')
+      this.push(null)
     }))
-  })
+  }))
 })
 
