@@ -33,6 +33,9 @@ function Depsify(entries, opts) {
   ;[].concat(opts.transform).filter(Boolean).forEach(function (p) {
     this.transform(p)
   }, this)
+  ;[].concat(opts.processor).filter(Boolean).forEach(function (p) {
+    this.processor(p)
+  }, this)
   ;[].concat(opts.entries).filter(Boolean).forEach(function (file) {
     this.add(file, { basedir: opts.basedir })
   }, this)
@@ -77,7 +80,7 @@ Depsify.prototype._createPipeline = function (opts) {
 }
 
 Depsify.prototype._createDeps = function(opts) {
-  opts = mix.fill({ transform: [] }, opts)
+  opts = mix.fill({ transform: [], processor: [] }, opts)
   return MDeps(opts)
 }
 
