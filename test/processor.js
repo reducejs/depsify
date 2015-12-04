@@ -3,29 +3,39 @@ var Depsify = require('../')
 var path = require('path')
 var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
+var fs = require('fs')
 
-test('processor', function(t) {
+var atImport = require('postcss-import')
+var vars = require('postcss-advanced-variables')
+
+var expected = fs.readFileSync(fixtures('processor', 'expected.css'), 'utf8')
+
+test('api', function(t) {
   t.plan(1)
-  var d = Depsify({
-    basedir: fixtures(),
-    resolve: function (file) {
-      return Promise.resolve(fixtures(file))
-    },
-    readFile: function (file) {
-      return Promise.resolve(path.basename(file, '.css') + '{}')
-    },
+  var b = Depsify({
+    basedir: fixtures('processor'),
+    atRuleName: 'external',
+    entries: ['./b.css', './a.css'],
   })
-  d.add(['./b.css', './a.css'])
-  d.processor([prefixer, 'x-'])
-  d.bundle().pipe(sink.str(function (body) {
-    t.equal(body, 'x-a{}x-b{}')
+  b.processor(atImport())
+  b.processor(vars())
+  b.bundle().pipe(sink.str(function (body) {
+    t.equal(body, expected)
     this.push(null)
   }))
 })
 
-function prefixer(result, prefix) {
-  var css = result.css
-  css = prefix + css.replace(/\s+/, '')
-  result.css = css
-}
+test('option', function(t) {
+  t.plan(1)
+  var b = Depsify({
+    basedir: fixtures('processor'),
+    atRuleName: 'external',
+    processor: [atImport(), vars()],
+    entries: ['./b.css', './a.css'],
+  })
+  b.bundle().pipe(sink.str(function (body) {
+    t.equal(body, expected)
+    this.push(null)
+  }))
+})
 

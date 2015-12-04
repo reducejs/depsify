@@ -1,0 +1,4 @@
+@import "vars";
+c {
+  color: $blue;
+}

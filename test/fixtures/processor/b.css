@@ -1,0 +1,6 @@
+@external "./c";
+@import "vars";
+b {
+  color: $green;
+}
+

@@ -3,63 +3,98 @@ var Depsify = require('../')
 var path = require('path')
 var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
+var thr = require('through2')
 
-test('plugin', function(t) {
+test('api', function(t) {
   t.plan(1)
-  var A = {
-    file: './a.css',
-    source: '@deps "./c.css";.a{}',
+  var cache = {
+    '/a': '@deps "./c";a{}',
+    '/b': '@deps "./c";b{}',
+    '/c': 'c{}',
   }
-  var B = {
-    file: './b.css',
-    source: '@deps "./c.css";.b{}',
-  }
-  var C = {
-    file: './c.css',
-    source: '.c{}',
-  }
-  var cache = {}
-  cache[fixtures('a.css')] = A
-  cache[fixtures('b.css')] = B
-  cache[fixtures('c.css')] = C
-  var d = Depsify({
-    basedir: fixtures(),
-    entries: [A.file, B.file, C.file],
-    resolve: function (file) {
-      return Promise.resolve(fixtures(file))
+  var b = Depsify({
+    basedir: '/',
+    entries: ['./a', './b'],
+    resolve: function (file, parent) {
+      return path.resolve(parent.basedir, file)
     },
     readFile: function (file) {
-      return Promise.resolve(cache[file].source)
+      return cache[file]
     },
   })
-  d.plugin('factor-vinylify', {
+
+  b.plugin('watermark', {
     basedir: fixtures(),
-    entries: [A.file, B.file],
-    common: 'common.css',
-  })
-  d.on('factor.pipeline', function (file, pipeline) {
-    var labeled = pipeline.get('pack')
-    labeled.splice(labeled.length - 1, 1, d.pack())
+    mark: 'api',
   })
 
-  var expected = [{}, {}, {}]
-  expected[0][fixtures('a.css')] = '.a{}'
-  expected[1][fixtures('b.css')] = '.b{}'
-  expected[2][fixtures('common.css')] = '.c{}'
-
-  d.bundle().pipe(sink.obj(function (files) {
-    t.same(
-      files.sort(function (a, b) {
-        return a.path < b.path ? -1 : 1
-      })
-      .map(function (file) {
-        var ret = {}
-        ret[file.path] = file.contents.toString('utf8')
-        return ret
-      }),
-      expected
-    )
+  b.bundle().pipe(sink.str(function (body) {
+    t.same(body, 'c{}\n/* api */\na{}\n/* api */\nb{}\n/* api */\n')
     this.push(null)
   }))
 })
+
+test('option', function(t) {
+  t.plan(1)
+  var cache = {
+    '/a': '@deps "./c";a{}',
+    '/b': '@deps "./c";b{}',
+    '/c': 'c{}',
+  }
+  var b = Depsify({
+    basedir: '/',
+    entries: ['./a', './b'],
+    resolve: function (file, parent) {
+      return path.resolve(parent.basedir, file)
+    },
+    readFile: function (file) {
+      return cache[file]
+    },
+    plugin: [['watermark', {
+      basedir: fixtures(),
+      mark: 'api',
+    }]],
+  })
+
+  b.bundle().pipe(sink.str(function (body) {
+    t.same(body, 'c{}\n/* api */\na{}\n/* api */\nb{}\n/* api */\n')
+    this.push(null)
+  }))
+})
+
+test('function', function(t) {
+  t.plan(1)
+  var cache = {
+    '/a': '@deps "./c";a{}',
+    '/b': '@deps "./c";b{}',
+    '/c': 'c{}',
+  }
+  var b = Depsify({
+    basedir: '/',
+    entries: ['./a', './b'],
+    resolve: function (file, parent) {
+      return path.resolve(parent.basedir, file)
+    },
+    readFile: function (file) {
+      return cache[file]
+    },
+  })
+
+  b.plugin(watermark, {
+    basedir: fixtures(),
+    mark: 'api',
+  })
+
+  b.bundle().pipe(sink.str(function (body) {
+    t.same(body, 'c{}\n/* api */\na{}\n/* api */\nb{}\n/* api */\n')
+    this.push(null)
+  }))
+})
+
+function watermark(b, opts) {
+  b.pipeline.get('deps').push(thr.obj(function (row, _, next) {
+    row.source += '\n/* ' + opts.mark + ' */\n'
+    next(null, row)
+  }))
+}
 

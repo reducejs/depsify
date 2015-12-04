@@ -6,25 +6,25 @@ var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
 test('custome resolve', function(t) {
   t.plan(1)
-  var d = Depsify({
+  var b = Depsify({
     basedir: fixtures(),
     resolve: function (file) {
-      return Promise.resolve(fixtures(file))
+      return fixtures(file)
     },
   })
-  d.add({
+  b.add({
     file: './a.css',
     source: '@deps "c.css";.a{}',
   })
-  d.add({
+  b.add({
     file: './b.css',
     source: '.b{}',
   })
-  d.add({
+  b.add({
     file: './c.css',
     source: '.c{}',
   })
-  d.bundle().pipe(sink.str(function (body, done) {
+  b.bundle().pipe(sink.str(function (body, done) {
     t.equal(body, '.c{}.a{}.b{}')
     done()
   }))
@@ -32,10 +32,10 @@ test('custome resolve', function(t) {
 
 test('node-style resolve', function(t) {
   t.plan(1)
-  var d = Depsify('./resolve/a.css', {
+  var b = Depsify('./resolve/a.css', {
     basedir: fixtures(),
   })
-  d.bundle().pipe(sink.str(function (body, done) {
+  b.bundle().pipe(sink.str(function (body, done) {
     t.equal(body.replace(/\s+/g, ''), '.color{}.b{}.a{}')
     done()
   }))

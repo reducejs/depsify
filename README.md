@@ -12,75 +12,59 @@ The main ideas are borrowed from [browserify](https://github.com/substack/node-b
 ## Related
 
 * [reduce-css](https://github.com/zoubin/reduce-css)
+* [reduce-css-postcss](https://github.com/zoubin/reduce-css-postcss)
 
 ## Example
 
 ```javascript
-import gulp from 'gulp'
-import depsify from '../lib/main'
-import path from 'path'
-import del from 'del'
-import postcss from 'postcss'
-import url from 'postcss-url'
-import source from 'vinyl-source-stream'
+var depsify = require('../')
+var path = require('path')
+var del = require('del')
 
-var processor = postcss([
-  require('postcss-import')(),
-  require('postcss-url')({ url: 'copy', assetsPath: 'i' }),
-  require('postcss-advanced-variables')(),
-])
+var fixtures = path.resolve.bind(path, __dirname)
+var DEST = fixtures('build')
 
-var fixtures = path.resolve.bind(path, __dirname, 'src')
-var DEST = path.join(__dirname, 'build')
-var common = path.join(DEST, 'common.css')
-
-gulp.task('clean', function () {
-  return del(DEST)
-})
-
-gulp.task('default', ['clean'], function () {
-  return depsify({
-    basedir: fixtures(),
+del(DEST).then(function () {
+  depsify({
+    basedir: fixtures('src'),
     entries: ['a.css', 'b.css'],
-    processor: function (result) {
-      return processor.process(result.css, {
-        from: result.from,
-        to: common,
-      })
-      .then(function (res) {
-        result.css = res.css
-      })
-    },
+    processor: [
+      require('postcss-import')(),
+      require('postcss-url')({ url: 'inline' }),
+      require('postcss-advanced-variables')(),
+    ],
   })
   .bundle()
-  .pipe(source('common.css'))
-  .pipe(gulp.dest(DEST))
+  .pipe(process.stdout)
 })
+
 
 ```
 
-## API
+## var b = Depsify(entries, options)
 
 ### Options
 
-#### basedir
-
-#### entries
-
-#### plugin
-
-#### __More__
-See [css-module-deps](https://github.com/zoubin/css-module-deps)
+* `basedir`
+* `entries`
+* `plugin`
+* `transform`
+* `processor`
+* And all options supported by [css-module-deps](https://github.com/zoubin/css-module-deps)
 
 ### Methods
 
-#### add(file, opts)
+* `add(file, opts)`
+* `plugin(p, opts)`
+* `transform(tr)`
+* `processor(p)`
+* `bundle()`
 
-#### processor(p)
+### Events
 
-#### plugin(p, opts)
-
-#### bundle()
-
-#### reset()
+* `file`
+* `transform`
+* `dep`
+* `reset`
+* `bundle`
 

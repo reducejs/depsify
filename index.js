@@ -1,5 +1,5 @@
 var EventEmitter = require('events')
-var mix = require('util-mix')
+var mix = require('mixy')
 var MDeps = require('css-module-deps')
 var thr = require('through2')
 var resolve = require('resolve')
@@ -30,6 +30,9 @@ function Depsify(entries, opts) {
 
   this.pipeline = this._createPipeline(opts)
 
+  ;[].concat(opts.transform).filter(Boolean).forEach(function (p) {
+    this.transform(p)
+  }, this)
   ;[].concat(opts.entries).filter(Boolean).forEach(function (file) {
     this.add(file, { basedir: opts.basedir })
   }, this)
@@ -40,7 +43,7 @@ function Depsify(entries, opts) {
 
 Depsify.prototype._createPipeline = function (opts) {
   var self = this
-  this._mdeps = new MDeps(Object.create(opts))
+  this._mdeps = this._createDeps(opts)
   this._mdeps.on('file', function (file) {
     pipeline.emit('file', file)
     self.emit('file', file)
@@ -54,16 +57,12 @@ Depsify.prototype._createPipeline = function (opts) {
     self.emit('transform', tr, file)
   })
 
-  if (opts.pack) {
-    this.pack = opts.pack
-  }
   // for factor-bundle
   this._bpack = this.pack(opts)
 
   var pipeline = splicer.obj([
     'record', [ this._recorder() ],
     'deps', [ this._mdeps ],
-    'unbom', [ this._unbom() ],
     'syntax', [],
     'sort', [],
     'dedupe', [],
@@ -77,14 +76,9 @@ Depsify.prototype._createPipeline = function (opts) {
   return pipeline
 }
 
-Depsify.prototype._unbom = function() {
-  return thr.obj(function (row, enc, next) {
-    if (/^\ufeff/.test(row.source)) {
-      row.source = row.source.replace(/^\ufeff/, '')
-    }
-    this.push(row)
-    next()
-  })
+Depsify.prototype._createDeps = function(opts) {
+  opts = mix.fill({ transform: [] }, opts)
+  return MDeps(opts)
 }
 
 Depsify.prototype._emitDeps = function() {
@@ -126,21 +120,27 @@ Depsify.prototype.pack = function() {
 
 Depsify.prototype.add = function(file, opts) {
   opts = opts || {}
+  var basedir = opts.basedir || this._options.basedir
   if (Array.isArray(file)) {
     file.forEach(function (f) {
       this.add(f, opts)
     }, this)
   } else if (typeof file === 'string') {
-    file = path.resolve(opts.basedir || this._options.basedir, file)
+    file = path.resolve(basedir, file)
     this.pipeline.write({ file: file })
   } else {
-    this.pipeline.write(mix({ basedir: this._options.basedir }, file, opts))
+    this.pipeline.write(mix({ basedir: basedir }, file, opts))
   }
   return this
 }
 
-Depsify.prototype.processor = function(p) {
-  this.pipeline.write({ processor: p })
+Depsify.prototype.processor = function(processor) {
+  this.pipeline.write({ processor: processor })
+  return this
+}
+
+Depsify.prototype.transform = function(tr) {
+  this.pipeline.write({ transform: tr })
   return this
 }
 
@@ -175,8 +175,10 @@ Depsify.prototype.bundle = function() {
     }, this)
   }
   var output = readonly(this.pipeline)
+
   this.emit('bundle', output)
   this.pipeline.end()
+
   this._bundled = true
 
   return output
