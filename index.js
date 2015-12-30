@@ -4,7 +4,7 @@ var MDeps = require('css-module-deps')
 var thr = require('through2')
 var resolve = require('resolve')
 var readonly = require('read-only-stream')
-var topoSort = require('deps-topo-sort')
+var topoSort = require('deps-topo-sort2')
 var path = require('path')
 var splicer = require('labeled-stream-splicer')
 var sink = require('sink-transform')
@@ -103,7 +103,7 @@ Depsify.prototype._recorder = function() {
 
 Depsify.prototype.pack = function() {
   return [
-    sink.obj(function (rows, done) {
+    sink.obj(function (rows, next) {
       rows.sort(function (a, b) {
         return a.file < b.file ? -1 : 1
       })
@@ -112,7 +112,7 @@ Depsify.prototype.pack = function() {
         row.id = row.file
         this.push(row)
       }, this)
-      done()
+      next()
     }),
     topoSort(),
     thr.obj(function (row, _, next) {

@@ -26,7 +26,7 @@
   "homepage": "https://github.com/zoubin/depsify#readme",
   "dependencies": {
     "css-module-deps": "^2.1.0",
-    "deps-topo-sort": "^0.2.1",
+    "deps-topo-sort2": "^1.0.0",
     "labeled-stream-splicer": "^2.0.0",
     "mixy": "^1.0.0",
     "read-only-stream": "^2.0.0",
@@ -40,6 +40,6 @@
     "postcss-advanced-variables": "^1.1.0",
     "postcss-import": "^7.1.0",
     "postcss-url": "^5.0.2",
-    "tap": "^2.3.1"
+    "tap": "^3.0.0"
   }
 }
