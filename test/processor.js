@@ -5,7 +5,7 @@ var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 var fs = require('fs')
 
-var atImport = require('postcss-import')
+var atImport = require('postcss-simple-import')
 var vars = require('postcss-advanced-variables')
 
 var expected = fs.readFileSync(fixtures('processor', 'expected.css'), 'utf8')

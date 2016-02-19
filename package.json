@@ -4,14 +4,14 @@
   "description": "Allow css modules to declare their dependencies and pack in custom ways",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && npm run cov",
-    "lint": "eslint *.js lib/**/*.js test/*.js bin/*.js",
+    "test": "npm run lint && tap test/*.js",
+    "lint": "eslint *.js 'lib/**/*.js' test/*.js bin/*.js",
     "cov": "tap --cov test/*.js",
-    "coveralls": "COVERALLS_REPO_TOKEN=YNDj4EuanRhIw7GPC8UVAUYdDb8Aiclom npm test"
+    "coveralls": "COVERALLS_REPO_TOKEN=REPO_TOKEN npm run cov"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zoubin/depsify.git"
+    "url": "git+https://github.com/reducejs/depsify.git"
   },
   "keywords": [
     "css",
@@ -20,12 +20,15 @@
   ],
   "author": "zoubin",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/zoubin/depsify/issues"
+  "engines": {
+    "node": ">=4.2.1"
   },
-  "homepage": "https://github.com/zoubin/depsify#readme",
+  "bugs": {
+    "url": "https://github.com/reducejs/depsify/issues"
+  },
+  "homepage": "https://github.com/reducejs/depsify#readme",
   "dependencies": {
-    "css-module-deps": "^2.1.0",
+    "css-module-deps": "^3.0.0",
     "deps-topo-sort2": "^1.0.0",
     "labeled-stream-splicer": "^2.0.0",
     "mixy": "^1.0.0",
@@ -36,10 +39,10 @@
   },
   "devDependencies": {
     "del": "^2.0.2",
-    "eslint": "^1.10.1",
+    "eslint": "^2.1.0",
     "postcss-advanced-variables": "^1.1.0",
-    "postcss-import": "^7.1.0",
-    "postcss-url": "^5.0.2",
-    "tap": "^3.0.0"
+    "postcss-simple-import": "^3.0.0",
+    "postcss-custom-url": "^4.0.0",
+    "tap": "^5.0.0"
   }
 }
