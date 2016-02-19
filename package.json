@@ -1,6 +1,6 @@
 {
   "name": "depsify",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "description": "Allow css modules to declare their dependencies and pack in custom ways",
   "main": "index.js",
   "scripts": {
