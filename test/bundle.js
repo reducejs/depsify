@@ -35,7 +35,7 @@ function bundler() {
     '/b': '@deps "./c";b{}',
     '/c': 'c{}',
   }
-  var b = Depsify({
+  var b = new Depsify({
     basedir: '/',
     entries: ['./a', './b'],
     resolve: function (file, parent) {

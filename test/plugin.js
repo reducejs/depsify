@@ -3,7 +3,7 @@ var Depsify = require('../')
 var path = require('path')
 var sink = require('sink-transform')
 var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
-var thr = require('through2')
+var Transform = require('stream').Transform
 
 test('api', function(t) {
   t.plan(1)
@@ -12,7 +12,7 @@ test('api', function(t) {
     '/b': '@deps "./c";b{}',
     '/c': 'c{}',
   }
-  var b = Depsify({
+  var b = new Depsify({
     basedir: '/',
     entries: ['./a', './b'],
     resolve: function (file, parent) {
@@ -41,7 +41,7 @@ test('option', function(t) {
     '/b': '@deps "./c";b{}',
     '/c': 'c{}',
   }
-  var b = Depsify({
+  var b = new Depsify({
     basedir: '/',
     entries: ['./a', './b'],
     resolve: function (file, parent) {
@@ -69,7 +69,7 @@ test('function', function(t) {
     '/b': '@deps "./c";b{}',
     '/c': 'c{}',
   }
-  var b = Depsify({
+  var b = new Depsify({
     basedir: '/',
     entries: ['./a', './b'],
     resolve: function (file, parent) {
@@ -92,9 +92,12 @@ test('function', function(t) {
 })
 
 function watermark(b, opts) {
-  b.pipeline.get('deps').push(thr.obj(function (row, _, next) {
-    row.source += '\n/* ' + opts.mark + ' */\n'
-    next(null, row)
+  b.pipeline.get('deps').push(Transform({
+    objectMode: true,
+    transform: function (row, enc, next) {
+      row.source += '\n/* ' + opts.mark + ' */\n'
+      next(null, row)
+    },
   }))
 }
 
