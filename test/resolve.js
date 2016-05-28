@@ -6,7 +6,7 @@ var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
 test('custome resolve', function(t) {
   t.plan(1)
-  var b = Depsify({
+  var b = new Depsify({
     basedir: fixtures(),
     resolve: function (file) {
       return fixtures(file)
@@ -32,7 +32,7 @@ test('custome resolve', function(t) {
 
 test('node-style resolve', function(t) {
   t.plan(1)
-  var b = Depsify('./resolve/a.css', {
+  var b = new Depsify('./resolve/a.css', {
     basedir: fixtures(),
   })
   b.bundle().pipe(sink.str(function (body, done) {

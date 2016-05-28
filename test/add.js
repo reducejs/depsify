@@ -27,7 +27,7 @@ test('object', function(t) {
 
 test('source', function(t) {
   t.plan(1)
-  var b = Depsify({
+  var b = new Depsify({
     basedir: fixtures(),
     resolve: function (file, parent) {
       return path.resolve(parent.basedir, file)
@@ -41,7 +41,7 @@ test('source', function(t) {
 
 test('options', function(t) {
   t.plan(1)
-  var b = Depsify({
+  var b = new Depsify({
     basedir: fixtures(),
     fileCache: fileCache,
     resolve: function (file, parent) {
@@ -60,7 +60,7 @@ test('array', function(t) {
 })
 
 function bundler() {
-  return Depsify({
+  return new Depsify({
     basedir: fixtures(),
     resolve: function (file, parent) {
       return path.resolve(parent.basedir, file)

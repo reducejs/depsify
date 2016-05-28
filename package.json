@@ -31,11 +31,8 @@
     "css-module-deps": "^3.0.0",
     "deps-topo-sort2": "^1.0.0",
     "labeled-stream-splicer": "^2.0.0",
-    "mixy": "^1.0.0",
     "read-only-stream": "^2.0.0",
-    "resolve": "^1.1.6",
-    "sink-transform": "^1.0.0",
-    "through2": "^2.0.0"
+    "resolve": "^1.1.6"
   },
   "devDependencies": {
     "del": "^2.0.2",
@@ -43,6 +40,7 @@
     "postcss-advanced-variables": "^1.1.0",
     "postcss-simple-import": "^3.0.0",
     "postcss-custom-url": "^4.0.0",
+    "sink-transform": "^2.0.0",
     "tap": "^5.0.0"
   }
 }

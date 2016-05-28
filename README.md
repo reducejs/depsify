@@ -18,7 +18,7 @@ The main ideas are borrowed from [browserify](https://github.com/substack/node-b
 ## Example
 
 ```javascript
-var depsify = require('../')
+var Depsify = require('../')
 var path = require('path')
 var del = require('del')
 
@@ -30,7 +30,7 @@ var url = require('postcss-custom-url')
 var vars = require('postcss-advanced-variables')
 
 del(DEST).then(function () {
-  depsify({
+  new Depsify({
     basedir: fixtures('src'),
     entries: ['a.css', 'b.css'],
     processor: [
@@ -45,7 +45,7 @@ del(DEST).then(function () {
 
 ```
 
-## var b = Depsify(entries, options)
+## var b = new Depsify(entries, options)
 
 ### Options
 

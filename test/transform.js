@@ -6,7 +6,7 @@ var fixtures = path.resolve.bind(path, __dirname, 'fixtures')
 
 test('api', function(t) {
   t.plan(1)
-  var d = Depsify({
+  var d = new Depsify({
     basedir: fixtures(),
     resolve: function (file) {
       return Promise.resolve(fixtures(file))
@@ -25,7 +25,7 @@ test('api', function(t) {
 
 test('option', function(t) {
   t.plan(1)
-  var d = Depsify({
+  var d = new Depsify({
     basedir: fixtures(),
     resolve: function (file) {
       return Promise.resolve(fixtures(file))

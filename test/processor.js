@@ -12,7 +12,7 @@ var expected = fs.readFileSync(fixtures('processor', 'expected.css'), 'utf8')
 
 test('api', function(t) {
   t.plan(1)
-  var b = Depsify({
+  var b = new Depsify({
     basedir: fixtures('processor'),
     atRuleName: 'external',
     entries: ['./b.css', './a.css'],
@@ -27,7 +27,7 @@ test('api', function(t) {
 
 test('option', function(t) {
   t.plan(1)
-  var b = Depsify({
+  var b = new Depsify({
     basedir: fixtures('processor'),
     atRuleName: 'external',
     processor: [atImport(), vars()],
