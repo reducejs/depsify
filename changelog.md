@@ -1,4 +1,14 @@
-<!-- d4f2b2e 1455872200000 -->
+<!-- e00e893 1464396764000 -->
+
+## [v5.0.0](https://github.com/reducejs/depsify/commit/e00e893) (2016-05-28)
+
+* [[`a637f5e`](https://github.com/reducejs/depsify/commit/a637f5e)] update sink-transform
+
+* [[`c523dba`](https://github.com/reducejs/depsify/commit/c523dba)] Numerical id
+
+* [[`830d86b`](https://github.com/reducejs/depsify/commit/830d86b)] package.json: coveralls
+
+* [[`5856850`](https://github.com/reducejs/depsify/commit/5856850)] changelog
 
 ## [v4.0.0](https://github.com/reducejs/depsify/commit/d4f2b2e) (2016-02-19)
 
