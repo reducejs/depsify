@@ -40,7 +40,7 @@
     "postcss-advanced-variables": "^1.1.0",
     "postcss-simple-import": "^3.0.0",
     "postcss-custom-url": "^4.0.0",
-    "sink-transform": "^1.0.0",
+    "sink-transform": "^2.0.0",
     "tap": "^5.0.0"
   }
 }
